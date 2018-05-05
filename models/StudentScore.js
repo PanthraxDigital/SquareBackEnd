@@ -9,7 +9,8 @@ var StudentScore = new keystone.List('StudentScore', {
 
 StudentScore.add({
 	studentName: { type: Types.Name, required: true, initial: true },
-	courses: {
+	studentImagePath: { type: String },
+	courseOpted: {
 		type: Types.Select,
 		options: 'Tenth, Ninth, Eighth, Seventh, Sixth, Fifth, Grammar',
 		initial: true,
@@ -17,9 +18,7 @@ StudentScore.add({
 	school: { type: String, required: true, initial: true },
 	examination: { type: String, required: true, initial: true },
 	percentScored: { type: Types.Number, required: true, initial: true },
-	studentImagePath: { type: String },
 	lastPercent: { type: Types.Number },
-	currentPercent: { type: Types.Number },
 	studentRank: { type: Types.Number },
 	scoredIn: {
 		english: { type: Types.Number },
@@ -32,19 +31,30 @@ StudentScore.add({
 		history: { type: Types.Number },
 		geography: { type: Types.Number },
 	},
-	diplayInCategories: {
-		type: Types.Relationship,
-		ref: 'DisplayCategory',
-		many: true,
+	displayInCategories: {
+		type: Types.Select,
+		numeric: true,
+		options: [
+			{ label: 'Top Scorer', value: 1 },
+			{ label: 'Subject Highest', value: 2 },
+			{ label: 'Growth Achieved', value: 3 },
+		],
+		index: true,
 	},
-	createdAt: { type: Date, default: Date.now },
 });
 
 StudentScore.schema.virtual('Subject.details').get(function () {
-	return this.subjects.english && this.subjects.hindi && this.subjects.marathi && this.subjects.algebra
-	&& this.subjects.geometry && this.subjects.science1 && this.subjects.science2 && this.subjects.history
-	&& this.subjects.geography;
+	return (
+		this.subjects.english
+		&& this.subjects.hindi
+		&& this.subjects.marathi
+		&& this.subjects.algebra
+		&& this.subjects.geometry
+		&& this.subjects.science1
+		&& this.subjects.science2
+		&& this.subjects.history
+		&& this.subjects.geography
+	);
 });
-StudentScore.defaultSort = '-createdAt';
 StudentScore.defaultColumns = 'studentName,std,school,diplayInCategories';
 StudentScore.register();
